@@ -14,8 +14,6 @@ public class Statement {
     public static ObjectMapper objectMapper = new ObjectMapper();
     private static Map<String, Play> plays;
     private static Invoice invoice;
-    private static Double totalAmount = 0.0;
-    private static Double volumeCredits = 0.0;
 
     public Statement() throws IOException {
 
@@ -31,6 +29,12 @@ public class Statement {
     public static void main(String[] args) throws Exception {
 
         init();
+        System.out.println(renderPlainText());
+
+
+    }
+
+    public static StringBuilder renderPlainText() throws Exception {
         List<Performance> performance = invoice.getPerformance();
         StringBuilder result = new StringBuilder("Statement for" + invoice.getCustomer() + "\n");
         for (Performance p : performance) {
@@ -39,12 +43,12 @@ public class Statement {
             result.append(p.getAudience()).append("seats\n");
 
 
+            result.append("Amount owed is ").append(getTotalAmount() / 100).append("\n");
+            result.append("you earned ").append(allVolumeCredits()).append("credits");
+
+
         }
-
-        result.append("Amount owed is ").append(getTotalAmount() / 100).append("\n");
-        result.append("you earned ").append(allVolumeCredits()).append("credits");
-        System.out.println(result);
-
+        return result;
     }
 
     public static Double amountFor(Performance p) throws Exception {
